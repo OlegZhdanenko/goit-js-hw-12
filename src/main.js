@@ -22,26 +22,34 @@ const button = document.querySelector(".js-button");
 button.addEventListener("click", loadMore);
 
 const domRect = list.getBoundingClientRect().width;
-console.log(domRect);
 window.scrollTo(0, `${domRect}`);
 
-
-let currentPage = 1;
+const perPage = 40;
+let currentPage = 12;
+let lastPage;
 let wordForSearch;
 button.style.display = 'none';
 
 function loadMore() {
     currentPage += 1;
     loader.style.display = 'block';
-    getPhoto(wordForSearch,currentPage)
+    getPhoto(wordForSearch, currentPage)
+    
 };
 
+function endCollection() {
+    if (lastPage===currentPage) {
+        button.style.display = 'none'
+        list.insertAdjacentHTML("beforeend",`<p>"We're sorry, but you've reached the end of search results."</p>`)
+    }
+};
 
 function onSearch(evt) {
     evt.preventDefault();
     wordForSearch = evt.currentTarget.elements.input.value;
     getPhoto(wordForSearch);
     button.style.display = 'block';
+    form.reset()
 };
 
 
@@ -55,7 +63,7 @@ async function getPhoto(wordForSearch,page=1) {
         orientation: "horizontal",
         safesearch: "true",
         page: `${page}`,
-        per_page: "40"
+        per_page: `${perPage}`
 	}
     }).then(responce => {  
         if (!responce.data.total) {
@@ -66,11 +74,14 @@ async function getPhoto(wordForSearch,page=1) {
                 message: 'Sorry, there are no images matching your search query. Please try again!'
             })
         }
-        
+
         loader.style.display = 'none';
-        list.insertAdjacentHTML("beforeend",createMarkup(responce.data.hits))
+        list.insertAdjacentHTML("beforeend", createMarkup(responce.data.hits))
+        lastPage = Math.ceil(responce.data.totalHits / `${perPage}`)
+        endCollection();
         lightbox.refresh();
         
+
     })
     .catch(error =>  iziToast.error({
                 position:'topRight',
