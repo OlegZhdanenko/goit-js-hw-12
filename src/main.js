@@ -21,8 +21,8 @@ const loader = document.querySelector(".loader");
 const button = document.querySelector(".js-button");
 button.addEventListener("click", loadMore);
 
-const domRect = list.getBoundingClientRect().width;
-window.scrollTo(0, `${domRect}`);
+const scrollPage = list.getBoundingClientRect().height;
+window.scrollTo(0, `${scrollPage}`);
 
 const perPage = 40;
 let currentPage = 12;
@@ -40,15 +40,19 @@ function loadMore() {
 function endCollection() {
     if (lastPage===currentPage) {
         button.style.display = 'none'
-        list.insertAdjacentHTML("beforeend",`<p>"We're sorry, but you've reached the end of search results."</p>`)
+        list.insertAdjacentHTML("beforeend",`<p class="end-collection">"We're sorry, but you've reached the end of search results."</p>`)
     }
 };
 
 function onSearch(evt) {
-    evt.preventDefault();
-    wordForSearch = evt.currentTarget.elements.input.value;
-    getPhoto(wordForSearch);
-    button.style.display = 'block';
+    evt.preventDefault()
+    if (evt.currentTarget.elements.input.value) {
+        wordForSearch = evt.currentTarget.elements.input.value
+        getPhoto(wordForSearch)
+        button.style.display = 'block';
+    }
+    
+    
     form.reset()
 };
 
