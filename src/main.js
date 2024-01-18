@@ -25,10 +25,9 @@ const scrollPage = list.getBoundingClientRect().height;
 window.scrollTo(0, `${scrollPage}`);
 
 const perPage = 40;
-let currentPage = 12;
+let currentPage = 1;
 let lastPage;
 let wordForSearch;
-button.style.display = 'none';
 
 function loadMore() {
     currentPage += 1;
@@ -51,46 +50,48 @@ function onSearch(evt) {
         getPhoto(wordForSearch)
         button.style.display = 'block';
     }
-    
-    
+    list.innerHTML= ""
+    button.style.display = 'none'
     form.reset()
 };
 
 
 async function getPhoto(wordForSearch,page=1) {
     loader.style.display = 'block';
-    await axios.get( "https://pixabay.com/api/",{
+    await axios.get("https://pixabay.com/api/", {
         params: {
-        key: "41617344-22077a3acba128accdfbcd745",
-		q:`${wordForSearch}`,
-        image_type: "photo",
-        orientation: "horizontal",
-        safesearch: "true",
-        page: `${page}`,
-        per_page: `${perPage}`
-	}
-    }).then(responce => {  
+            key: "41617344-22077a3acba128accdfbcd745",
+            q: `${wordForSearch}`,
+            image_type: "photo",
+            orientation: "horizontal",
+            safesearch: "true",
+            page: `${page}`,
+            per_page: `${perPage}`
+        }
+    }).then(responce => {
         if (!responce.data.total) {
-            button.style.display = 'none'
+            
             form.reset()
             iziToast.error({
                 position: 'topRight',
                 message: 'Sorry, there are no images matching your search query. Please try again!'
             })
         }
-
+        button.style.display = 'block'
         loader.style.display = 'none';
         list.insertAdjacentHTML("beforeend", createMarkup(responce.data.hits))
         lastPage = Math.ceil(responce.data.totalHits / `${perPage}`)
-        endCollection();
-        lightbox.refresh();
+        endCollection()
+        lightbox.refresh()
         
 
     })
-    .catch(error =>  iziToast.error({
-                position:'topRight',
-                message: `"${error}"`
-            }))
+        .catch(error => iziToast.error({
+            position: 'topRight',
+            message: `"${error}"`
+        })
+        )
+    
 };
 
 

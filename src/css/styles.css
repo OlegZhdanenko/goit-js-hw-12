@@ -94,7 +94,7 @@ button {
   height: 40px;
 }
 .js-button{
-  display: block;
+  display: none;
   margin-right: auto;
   margin-left: auto;
 }
