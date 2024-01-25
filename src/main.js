@@ -21,8 +21,6 @@ const loader = document.querySelector(".loader");
 const button = document.querySelector(".js-button");
 button.addEventListener("click", loadMore);
 
-const scrollPage = list.getBoundingClientRect().height;
-window.scrollTo(0, `${scrollPage}`);
 
 const perPage = 40;
 let currentPage = 1;
@@ -33,7 +31,14 @@ function loadMore() {
     currentPage += 1;
     loader.style.display = 'block';
     getPhoto(wordForSearch, currentPage)
+    const link = document.querySelectorAll(".js-list li")
     
+    const scrollPage = link[0].getBoundingClientRect().height
+    console.log(scrollPage);
+    window.scrollBy({
+        button: scrollPage*3,
+        behavior:"smooth"
+    })
 };
 
 function endCollection() {
@@ -97,7 +102,7 @@ async function getPhoto(wordForSearch,page=1) {
 
 function createMarkup(arr) {
     return arr.map(({webformatURL,largeImageURL,tags,likes,views,comments,downloads}) =>` <li>
-    <a href="${largeImageURL}"><img src="${webformatURL}" alt="${tags}" width="350px" height="250px"></a>
+    <a href="${largeImageURL}" class ="js-link"><img src="${webformatURL}" alt="${tags}" width="350px" height="250px"></a>
     <ul class="discription-list">
     <li class="discription-item">
         <h2>Likes</h2>
